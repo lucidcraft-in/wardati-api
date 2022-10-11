@@ -6,8 +6,8 @@ const stockSchema = mongoose.Schema({
     required: true,
     ref: 'Product',
   },
-  size: { type: Number, required: true },
-  color: { type: String, required: true },
+  size: { type: String, required: true },
+  price: { type: Number, required: true },
   count: { type: Number, required: true },
 });
 

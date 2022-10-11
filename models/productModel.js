@@ -17,7 +17,7 @@ const reviewSchema = mongoose.Schema(
 )
 const imagesSchema = mongoose.Schema(
   {
-    color: { type: String, required: true },
+    // color: { type: String, required: true },
     url: { type: String, required: true },
   
    
@@ -62,7 +62,7 @@ const productSchema = mongoose.Schema(
     },
     subcategory: {
       type: String,
-      required: true,
+      // required: true,
       default: '',
     },
 

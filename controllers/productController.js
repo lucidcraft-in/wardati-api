@@ -133,8 +133,7 @@ await Stock.deleteMany({ product: req.params.id });
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-console.log(req.body.selectedSubCategory);
-    
+
 
   const product = new Product({
     name: req.body.name,
@@ -152,9 +151,9 @@ console.log(req.body.selectedSubCategory);
     subcategory: req.body.selectedSubCategory,
     promotionPercentage: req.body.promotionPercentage,
   });
-
+ 
   const createdProduct = await product.save();
-
+  
   res.status(201).json(createdProduct)
 })
 

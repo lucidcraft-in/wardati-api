@@ -104,7 +104,7 @@ const createStock = asyncHandler(async (req, res) => {
 
   const stock = new Stock({
     product: req.body.product,
-    color: req.body.color,
+    price: req.body.price,
     count: req.body.count,
     size: req.body.size,
   });
@@ -120,13 +120,14 @@ const createStock = asyncHandler(async (req, res) => {
 // @route   PUT /api/stocks/:id
 // @access  Private/Admin
 const updateStock = asyncHandler(async (req, res) => {
-  const { color, count } = req.body;
+  const { price, count,size } = req.body;
 
   const stock = await Stock.findById(req.params.id);
 
   if (stock) {
-    stock.color = color;
+    stock.price = price;
     stock.count = count;
+    stock.size = size;
     
     
 
