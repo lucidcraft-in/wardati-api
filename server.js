@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-
+import cors from 'cors';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -14,6 +14,7 @@ import stockRoutes from './routes/stockRoutes.js';
 
 const app = express();
 dotenv.config();
+app.use(cors());
 connectDB();
 
 app.use(express.json());
