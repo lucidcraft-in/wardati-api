@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import cors from 'cors';
@@ -18,6 +19,9 @@ app.use(cors());
 connectDB();
 
 app.use(express.json());
+
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
