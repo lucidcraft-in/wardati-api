@@ -48,11 +48,9 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   GET /api/products/category/:id
 // @access  Public
 const getProductByCategory = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  
+ 
    const products = await Product.find({
-     category: product.category,
-     _id: { $ne: req.params.id },
+     category: req.params.id,
    });
 
   if (products) {
