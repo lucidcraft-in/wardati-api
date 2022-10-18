@@ -58,7 +58,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
             size: orderItems[i].size,
             color: orderItems[i].color,
           },
-          { $inc: { count: -orderItems[i].qty } },
+          {
+            $inc: { count: -orderItems[i].qty, totalSaleCount: totalSaleCount++},
+          },
           { new: true }
         );
 

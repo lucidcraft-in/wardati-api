@@ -41,6 +41,17 @@ const getStocks = asyncHandler(async (req, res) => {
 })
 
 
+const getTopSelling = asyncHandler(async (req, res) => {
+  
+
+ 
+  const stocks = await Stock.find({ totalSaleCount :-1});
+  
+
+  res.json({ stocks  });
+});
+
+
 
 
 // @desc    Fetch single Stock
@@ -105,6 +116,7 @@ const createStock = asyncHandler(async (req, res) => {
   const stock = new Stock({
     product: req.body.product,
     price: req.body.price,
+    sellingPrice:req.body.sellingPrice,
     count: req.body.count,
     size: req.body.size,
   });
@@ -120,7 +132,7 @@ const createStock = asyncHandler(async (req, res) => {
 // @route   PUT /api/stocks/:id
 // @access  Private/Admin
 const updateStock = asyncHandler(async (req, res) => {
-  const { price, count,size } = req.body;
+  const { price, count,size,sellingPrice } = req.body;
 
   const stock = await Stock.findById(req.params.id);
 
@@ -128,7 +140,8 @@ const updateStock = asyncHandler(async (req, res) => {
     stock.price = price;
     stock.count = count;
     stock.size = size;
-    
+     stock.sellingPrice = sellingPrice;
+      
     
 
     const updatedStock = await stock.save();
@@ -140,4 +153,12 @@ const updateStock = asyncHandler(async (req, res) => {
 });
 
 
-export { getStocks, getStockById, getStockByProduct , deleteStock, createStock, updateStock };
+export {
+  getStocks,
+  getStockById,
+  getStockByProduct,
+  deleteStock,
+  createStock,
+  updateStock,
+  getTopSelling,
+};

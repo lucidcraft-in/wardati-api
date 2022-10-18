@@ -11,7 +11,7 @@ import {
 
 router.route('/').post(protect, admin, addBanner);
 
-router.route('/:id').get(getBanner).delete(protect, admin, deleteBanner);
+router.route('/:id').delete(protect, admin, deleteBanner);
   
 
 
