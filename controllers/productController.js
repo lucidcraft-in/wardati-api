@@ -63,6 +63,23 @@ const getProductByCategory = asyncHandler(async (req, res) => {
   }
 })
 
+
+const getProductByTrending = asyncHandler(async (req, res) => {
+  
+
+  const products = await Product.find({
+          isTrending:true
+  });
+
+  if (products) {
+    res.json(products);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+
 const getProductByCategoryPriority = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
@@ -150,6 +167,7 @@ const createProduct = asyncHandler(async (req, res) => {
     category: req.body.category,
     subcategory: req.body.selectedSubCategory,
     promotionPercentage: req.body.promotionPercentage,
+    isTrending: req.body.isTrending,
   });
  
   const createdProduct = await product.save();
@@ -173,6 +191,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     countInStock,
     stockArray,
     promotionPercentage,
+    isTrending,
   } = req.body;
 
   const product = await Product.findById(req.params.id)
@@ -189,7 +208,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.countInStock = countInStock
      product.stock = stockArray;
     product.promotionPercentage = promotionPercentage;
-
+    product.isTrending = isTrending;
     const updatedProduct = await product.save()
     res.json(updatedProduct)
   } else {
@@ -258,4 +277,5 @@ export {
   getTopProducts,
   getProductByCategoryPriority,
   getProductByCategory,
+  getProductByTrending,
 };

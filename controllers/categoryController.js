@@ -7,10 +7,11 @@ import SubCategory from '../models/subcategoryModel.js';
 const addCategory = asyncHandler(async (req, res) => {
    
     const category = new Category({
-        categoryName: req.body.categoryName,
-        title: req.body.title,
-        priority: req.body.priority,
-    })
+      categoryName: req.body.categoryName,
+      title: req.body.title,
+      priority: req.body.priority,
+      image: req.body.image,
+    });
     const createdCategory = await category.save()
     res.status(200).json(createdCategory);
 })
@@ -19,7 +20,8 @@ const updateCategory = asyncHandler(async (req, res) => {
     const {
         categoryName,
         title,
-        priority
+      priority,
+        image
     } = req.body;
 
     const category = await Category.findById(req.params.id)
@@ -28,7 +30,7 @@ const updateCategory = asyncHandler(async (req, res) => {
         category.categoryName = categoryName;
         category.title = title;
         category.priority = priority;
-
+         category.image = image;
         const updateCategory = await category.save()
         res.json(updateCategory);
     }

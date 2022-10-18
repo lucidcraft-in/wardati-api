@@ -102,6 +102,7 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     images: [imagesSchema],
+    isTrending :{type:Boolean,default :false}
   },
   {
     timestamps: true,
