@@ -18,7 +18,7 @@ const reviewSchema = mongoose.Schema(
 const imagesSchema = mongoose.Schema(
   {
     // color: { type: String, required: true },
-    url: { type: String, required: true },
+    url: { type: String },
   
    
   },
