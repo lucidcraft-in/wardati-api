@@ -3,6 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import cors from 'cors';
+
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -11,7 +12,7 @@ import promotionRoutes from './routes/promotionRoutes.js';
 import subCategoryRoutes from './routes/subCategoryRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import stockRoutes from './routes/stockRoutes.js';
-
+import banner from './routes/bannerPageRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/api/promotion', promotionRoutes);
 app.use('/api/subcategory', subCategoryRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/stock', stockRoutes);
+app.use('/api/banner', banner);
 
   app.get('/', (req, res) => {
     res.send('API is running....');
