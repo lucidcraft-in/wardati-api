@@ -9,7 +9,7 @@ import {
   deleteBanner,
 } from '../controllers/bannerPageController.js';
 
-router.route('/').post(protect, admin, addBanner);
+router.route('/').post(protect, admin, addBanner).get(getBanner);
 
 router.route('/:id').delete(protect, admin, deleteBanner);
   
