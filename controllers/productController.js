@@ -63,6 +63,22 @@ const getProductByCategory = asyncHandler(async (req, res) => {
   }
 })
 
+const getProductBySubCategory = asyncHandler(async (req, res) => {
+ 
+
+  const products = await Product.find({
+    subcategory: req.params.id,
+    
+  });
+
+  if (products) {
+    res.json(products);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 
 const getProductByTrending = asyncHandler(async (req, res) => {
   
@@ -278,4 +294,5 @@ export {
   getProductByCategoryPriority,
   getProductByCategory,
   getProductByTrending,
+  getProductBySubCategory,
 };

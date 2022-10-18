@@ -11,6 +11,7 @@ import {
   getProductByCategoryPriority,
   getProductByCategory,
   getProductByTrending,
+  getProductBySubCategory,
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js'
 
@@ -19,6 +20,7 @@ router.route('/:id/reviews').post(protect, createProductReview)
 router.get('/top', getTopProducts)
 router.get('/priority', getProductByCategoryPriority)
 router.get('/trending', getProductByTrending);
+router.get('/subcategory/:id', getProductBySubCategory);
 router
   .route('/:id')
   .get(getProductById)
