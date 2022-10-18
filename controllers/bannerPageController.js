@@ -6,6 +6,9 @@ const addBanner = asyncHandler(async (req, res) => {
   const banner = new Banner({
     bannerPosition: req.body.bannerPosition,
     image: req.body.image,
+    title: req.body.title,
+    description: req.body.description,
+    category: req.body.category,
   });
   const createdBanner = await banner.save();
   res.status(200).json(createdBanner);
