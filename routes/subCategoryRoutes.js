@@ -6,7 +6,7 @@ import {
   deleteSubCategory,
   createSubCategory,
   updateSubCategory,
-  
+  getSubCategoryByCategory,
 } from '../controllers/subCategoryController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -17,5 +17,5 @@ router
   .delete(protect, admin, deleteSubCategory)
   .put(protect, admin, updateSubCategory);
   
-
+router.route('/category/:id').get(getSubCategoryByCategory);
     export default router;

@@ -53,6 +53,17 @@ const getSubCategoryById = asyncHandler(async (req, res) => {
   }
 });
 
+
+const getSubCategoryByCategory = asyncHandler(async (req, res) => {
+  const subCategory = await SubCategory.find({ category :req.params.id });
+
+  if (subCategory) {
+    res.json(subCategory);
+  } else {
+    res.status(404);
+    throw new Error('subCategory not found');
+  }
+});
 // @desc    Delete a subCategory
 // @route   DELETE /api/subCategorys/:id
 // @access  Private/Admin
@@ -125,5 +136,5 @@ export {
   deleteSubCategory,
   createSubCategory,
   updateSubCategory,
-   
+  getSubCategoryByCategory,
 };
