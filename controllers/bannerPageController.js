@@ -11,15 +11,19 @@ const addBanner = asyncHandler(async (req, res) => {
   res.status(200).json(createdBanner);
 });
 
+const getBanners = asyncHandler(async (req, res) => {
+  const banner = await Banner.find({
+  });
+  res.json({ banner });
+});
+
 
 const getBanner = asyncHandler(async (req, res) => {
   
   const banner = await Banner.find({
     bannerPosition: req.params.id,
   });
-   
-
-  res.json({ banner });
+ res.json({ banner });
 });
 
 const deleteBanner = asyncHandler(async (req, res) => {
@@ -35,5 +39,5 @@ const deleteBanner = asyncHandler(async (req, res) => {
     throw new Error('Banner not found');
   }
 });
-export { addBanner, getBanner, deleteBanner };
+export { addBanner, getBanner, deleteBanner, getBanners };
 
