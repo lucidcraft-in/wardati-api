@@ -13,6 +13,6 @@ router.route('banner/:id').get(getBanner);
 
 
 // Top selling
-router.route('topselling').get(getTopSelling);
+router.route('/topselling').get(getTopSelling);
 
 export default router;
