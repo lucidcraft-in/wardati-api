@@ -28,6 +28,11 @@ const getBanner = asyncHandler(async (req, res) => {
  res.json({ banner });
 });
 
+const getSingleBanner = asyncHandler(async (req, res) => {
+  const banner = await Banner.findById(req.params.id);
+  res.json({ banner });
+});
+
 const deleteBanner = asyncHandler(async (req, res) => {
   
 
@@ -41,5 +46,5 @@ const deleteBanner = asyncHandler(async (req, res) => {
     throw new Error('Banner not found');
   }
 });
-export { addBanner, getBanner, deleteBanner, getBanners };
+export { addBanner, getBanner, deleteBanner, getBanners, getSingleBanner };
 
