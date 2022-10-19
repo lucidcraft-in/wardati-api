@@ -96,7 +96,7 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    stock: [productStock],
+    
     promotionPercentage: {
       type: Number,
       default: 0,

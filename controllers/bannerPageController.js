@@ -46,5 +46,31 @@ const deleteBanner = asyncHandler(async (req, res) => {
     throw new Error('Banner not found');
   }
 });
-export { addBanner, getBanner, deleteBanner, getBanners, getSingleBanner };
+
+const updateBanner = asyncHandler(async (req, res) => {
+  const { bannerPosition, image, title, description, category } = req.body;
+
+  const banner = await Banner.findById(req.params.id);
+
+  if (banner) {
+    banner.bannerPosition = bannerPosition;
+    banner.image = image;
+    banner.title = title;
+    banner.description = description;
+    banner.category = category;
+    const updateBanner = await banner.save();
+    res.json(updateBanner);
+  } else {
+    res.status(404);
+    throw new Error('Banner not found');
+  }
+});
+export {
+  addBanner,
+  getBanner,
+  deleteBanner,
+  getBanners,
+  getSingleBanner,
+  updateBanner,
+};
 
