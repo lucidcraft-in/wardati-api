@@ -45,10 +45,12 @@ const getTopSelling = asyncHandler(async (req, res) => {
   
 
  
-  const stocks = await Stock.find({ totalSaleCount :-1});
+  const stocks = await Stock.aggregate([
+    { $sort: { totalSaleCount: -1 } },
+  ]).limit(5);
   
 
-  res.json({ stocks  });
+  res.json({ stocks })
 });
 
 
