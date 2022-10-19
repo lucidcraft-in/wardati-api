@@ -9,7 +9,7 @@ import { getBanner} from '../controllers/bannerPageController.js';
 
 
 // Banner
-router.route('banner/:id').get(getBanner);
+router.route('/banner/:id').get(getBanner);
 
 
 // Top selling
