@@ -14,6 +14,8 @@ const addCart = asyncHandler(async (req, res) => {
                 { $or: [{ count: { $gte: item.quantity } }] },
                 ],
             });
+      
+    
         
            if (isStockAvailable.length === 0) {
                   return res
@@ -21,8 +23,8 @@ const addCart = asyncHandler(async (req, res) => {
                     .json({ message: 'Stock is not available' });
            } else {
                
-               const isCartAdded = await Cart.findOne({ userId: userId });
-               
+               const isCartAdded = await Cart.find({ userId: userId });
+                 console.log(userId);
                  if (isCartAdded.length === 0) {
                    const addToCart = new Cart({
                      userId: req.body.userId,
@@ -30,7 +32,10 @@ const addCart = asyncHandler(async (req, res) => {
                    });
                    const cartCreated = await addToCart.save();
 
-                   return res.status(200).json(cartCreated);
+                   
+                    return res
+                      .status(200)
+                      .json({ message: 'New cart created', cartCreated });
                  } else {
                      
                      const findItemIndex = isCartAdded.item.findIndex(
