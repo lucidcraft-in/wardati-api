@@ -23,8 +23,8 @@ const addCart = asyncHandler(async (req, res) => {
                     .json({ message: 'Stock is not available' });
            } else {
                
-               const isCartAdded = await Cart.find({ userId: userId });
-                 console.log(userId);
+               const isCartAdded = await Cart.findOne({ userId: userId });
+                   
                  if (isCartAdded.length === 0) {
                    const addToCart = new Cart({
                      userId: req.body.userId,
@@ -37,11 +37,11 @@ const addCart = asyncHandler(async (req, res) => {
                       .status(200)
                       .json({ message: 'New cart created', cartCreated });
                  } else {
-                     
+                    
                      const findItemIndex = isCartAdded.item.findIndex(
                        (itm) => itm.itemId.toString() === item.itemId
                      );
-
+        
                    
 
                        
@@ -63,7 +63,7 @@ const addCart = asyncHandler(async (req, res) => {
                      const updateCategory = await isCartAdded.save();
                       return res
                         .status(200)
-                        .json({ message: 'Cart already added'});
+                        .json({ message: 'Cart item already added'});
                    
                   
                  }
