@@ -9,36 +9,34 @@ const orderSchema = mongoose.Schema(
     },
     orderItems: [
       {
-        name: { type: String, required: true },
-        qty: { type: Number, required: true },
-        image: { type: String, required: true },
-        price: { type: Number, required: true },
-        promotionPercentage: { type: Number },
-        offerPrice: { type: Number },
-        amount: { type: Number },
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Product',
-        },
-        size: { type: Number },
-        color: { type: String },
+        itemId: { type: String, required: true },
+        stockId: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        totalAmount: { type: Number, required: true },
+        productDetails: {},
+        stockDetails: {  },
+  
       },
     ],
     promotion: {},
     shippingAddress: {
-      fName: { type: String, required: true },
-      lName: { type: String },
-      address: { type: String, required: true },
+      firstName: { type: String, required: true },
+      lastName: { type: String },
+      address1: { type: String, required: true },
+      address2: { type: String },
       apartment: { type: String },
       city: { type: String, required: true },
-      emirate: { type: String, required: true },
+      region: { type: String, required: true },
+      country: { type: String, required: true },
+      zip: { type: Number, required: true },
       phone: { type: String, required: true },
     },
     paymentMethod: {
-      type: String,
+      type: Number,
       required: true,
     },
+    // 1. COD
+    // 2. CARD
     paymentResult: {
       id: { type: String },
       status: { type: String },
@@ -90,6 +88,9 @@ const orderSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    deliveredAt: {
+      type: Date,
     },
     isDelivered: {
       type: Boolean,

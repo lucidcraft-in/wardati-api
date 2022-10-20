@@ -2,11 +2,12 @@ import asyncHandler from 'express-async-handler'
 import Order from '../models/orderModel.js'
 import User from '../models/userModel.js';
 import Stock from '../models/stockModel.js';
+import Product from '../models/productModel.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
-const addOrderItems = asyncHandler(async (req, res) => {
+const checkout = asyncHandler(async (req, res) => {
   const {
     orderItems,
     shippingAddress,
@@ -25,12 +26,57 @@ const addOrderItems = asyncHandler(async (req, res) => {
    
 
   if (orderItems && orderItems.length === 0) {
-    res.status(400)
-    throw new Error('No order items')
-    return
+     return res.status(400).json({ message: 'No order items' });
+     
+    
   } else {
+
+// Check stock availability
+    
+    let itemsLIst = [];
+    let totalAmountInDb = 0;
+    for (let index = 0; index < orderItems.length; index++) {
+     
+
+         const isStockAvailable = await Stock.findOne({
+           $and: [
+             { $or: [{ product: orderItems[index].itemId }] },
+             { $or: [{ _id: orderItems[index].stockId }] },
+             { $or: [{ count: { $gte: orderItems[index].quantity } }] },
+           ],
+         });
+      
+      if (!isStockAvailable) {
+           return res.status(400).json({ message: 'Stock is not available' });
+      } else {
+        const product = await Product.findById(orderItems[index].itemId);
+        const stock = await Stock.findById(orderItems[index].stockId);
+        
+        let obj = {
+          itemId: orderItems[index].itemId,
+          stockId: orderItems[index].stockId,
+          quantity: orderItems[index].quantity,
+          totalAmount: stock.sellingPrice * orderItems[index].quantity,
+          productDetails: product,
+          stockDetails: stock,
+        };
+
+        itemsLIst.push(obj);
+
+        totalAmountInDb =
+          totalAmountInDb + stock.sellingPrice * orderItems[index].quantity;
+           
+      }
+    }
+
+    if (totalAmountInDb != totalPrice) {
+      return res.status(400).json({ message: 'Total amount is not match' });
+    }
+
+    
+
     const order = new Order({
-      orderItems,
+      orderItems:itemsLIst,
       user: req.user._id,
       shippingAddress,
       paymentMethod,
@@ -46,7 +92,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     });
 
     const createdOrder = await order.save()
-
+ 
 
     if (createdOrder) {
 
@@ -54,32 +100,36 @@ const addOrderItems = asyncHandler(async (req, res) => {
       for (var i = 0; i < itemsLength; i++) {
         let updateStock = await Stock.findOneAndUpdate(
           {
-            product: orderItems[i].product,
-            size: orderItems[i].size,
-            color: orderItems[i].color,
+            product: orderItems[i].itemId,
+            _id: orderItems[i].stockId,
           },
           {
-            $inc: { count: -orderItems[i].qty, totalSaleCount: totalSaleCount++},
+            $inc: {
+              count: -orderItems[i].quantity,
+              totalSaleCount: orderItems[i].quantity,
+            },
           },
           { new: true }
         );
 
-        console.log(updateStock);
+        
       }
       
  
     }
-
+ return res
+   .status(200)
+   .json({ message: 'Order created successfully', createdOrder });
      
-    if (createdOrder && promotion._id != undefined) {
-      let updatePromotionInUser = await User.findById(req.user._id);
-      updatePromotionInUser.promotions = promotion;
+    // if (createdOrder && promotion._id != undefined) {
+    //   let updatePromotionInUser = await User.findById(req.user._id);
+    //   updatePromotionInUser.promotions = promotion;
 
-      await updatePromotionInUser.save();
+    //   await updatePromotionInUser.save();
 
-    } 
+    // } 
 
-     res.status(201).json(createdOrder);
+    //  res.status(201).json(createdOrder);
   }
 })
 
@@ -184,7 +234,7 @@ const getOrders = asyncHandler(async (req, res) => {
 })
 
 export {
-  addOrderItems,
+  checkout,
   getOrderById,
   updateOrderToPaid,
   updateOrderToDelivered,
