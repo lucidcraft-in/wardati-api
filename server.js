@@ -15,6 +15,7 @@ import stockRoutes from './routes/stockRoutes.js';
 import banner from './routes/bannerPageRoutes.js';
 import home from './routes/homeBanner.js';
 import wishList from './routes/wishListPageRoute.js';
+import cart from './routes/cartPageRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -37,6 +38,7 @@ app.use('/api/stock', stockRoutes);
 app.use('/api/banner', banner);
 app.use('/api/home', home);
 app.use('/api/wishlist', wishList);
+app.use('/api/cart', cart);
 
   app.get('/', (req, res) => {
     res.send('API is running....');

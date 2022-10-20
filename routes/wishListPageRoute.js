@@ -16,6 +16,6 @@ router
   .delete(protect, removeWishList)
   .get(protect, getWishListByUser);
   
-  router.route('/product/:id').get(protect, getWishListByProduct);
+  router.route('/product/:id/:user').get(protect, getWishListByProduct);
 
 export default router;
