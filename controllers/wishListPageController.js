@@ -35,7 +35,35 @@ const removeWishList = asyncHandler(async (req, res) => {
 });
 
 const getWishListByUser = asyncHandler(async (req, res) => {
-  const wishList = await WishList.find({ userId: req.params.id });
+  
+
+  const wishList = await WishList.aggregate([
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'itemId',
+        foreignField: '_id',
+        as: 'items',
+      },
+    },
+     
+  ]);
+
+ 
+  const byUser = wishList.find(
+    (list) => list.userId.toString() === req.params.id
+  );
+  
+  if (byUser) {
+    res.json(byUser);
+  } else {
+    res.status(404);
+    throw new Error('wishList not found');
+  }
+});
+
+const getWishListByProduct = asyncHandler(async (req, res) => {
+  const wishList = await WishList.findOne({ itemId: req.params.id });
 
   if (wishList) {
     res.json(wishList);
@@ -47,4 +75,4 @@ const getWishListByUser = asyncHandler(async (req, res) => {
 
 
 
-export { addWishList, removeWishList, getWishListByUser };
+export { addWishList, removeWishList, getWishListByUser, getWishListByProduct };
