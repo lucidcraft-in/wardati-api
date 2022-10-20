@@ -109,11 +109,11 @@ const getCartByUser = asyncHandler(async (req, res) => {
 const removeOnCart = asyncHandler(async (req, res) => {
   try {
     const cart = await Cart.findById(req.body.id);
-    
+     
     let cartItem = cart.item.findIndex((ite) => ite.itemId.toString() === req.body.itemId);
-    console.log(cartItem);
+   
 
-    if (cartItem > 0) { cart.item.splice(cartItem, 1); } else {
+    if (cartItem >= 0) { cart.item.splice(cartItem, 1); } else {
        return res.status(400).json({ message: "Item not found in cart" });
     }
 
