@@ -49,9 +49,14 @@ const getWishListByUser = asyncHandler(async (req, res) => {
      
   ]);
 
- 
-  const byUser = wishList.find(
-    (list) => list.userId.toString() === req.params.id
+
+  const byUser = wishList.map(
+    (list) => {
+      if (list.userId.toString() === req.params.id) {
+        return list;
+      }
+    }
+      
   );
   
   if (byUser) {
