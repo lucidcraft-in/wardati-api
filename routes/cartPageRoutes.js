@@ -8,8 +8,8 @@ import {
   removeOnCart
 } from '../controllers/cartController.js';
 
-router.route('/').post(protect, addCart);
+router.route('/').post(protect, addCart).put(protect, removeOnCart);
 
-router.route('/:id').get(protect, getCartByUser).post(protect,removeOnCart);
+router.route('/:id').get(protect, getCartByUser);
 
 export default router;
