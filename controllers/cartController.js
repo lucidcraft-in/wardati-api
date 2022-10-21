@@ -101,11 +101,16 @@ const getCartByUser = asyncHandler(async (req, res) => {
     if (cart) {
        for (let index = 0; index < cart.item.length; index++) {
          const productDetails = await Product.findById(cart.item[index].itemId);
+         const stock = await Stock.findById(cart.item[index].stockId);
+         
+       
 
          cart.item[index].image = productDetails.images[0].url;
+         cart.item[index].price = stock.price;
+         cart.item[index].sellingPrice = stock.sellingPrice;
        }
-
-       await cart.save();
+ 
+      //  await cart.save();
 
        return res.status(200).json(cart);
     } else {

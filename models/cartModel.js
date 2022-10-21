@@ -15,6 +15,8 @@ const itemsSchema = mongoose.Schema(
       ref: 'stock',
     },
     image: { type: String },
+    price: { type: Number, required: true },
+    sellingPrice: { type: Number, required: true },
   },
   {
     timestamps: true,

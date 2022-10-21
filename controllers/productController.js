@@ -31,13 +31,27 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/:id
 // @access  Public
 const getProductById = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
+ 
 
-  if (product) {
-    res.json(product)
+
+    const product = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'stocks',
+          localField: '_id',
+          foreignField: 'product',
+          as: 'stock_items',
+        },
+      },
+    ]); 
+  
+  const byUser = product.find((list) => list._id.toString() === req.params.id);
+ 
+  if (byUser) {
+    res.json(byUser);
   } else {
-    res.status(404)
-    throw new Error('Product not found')
+    res.status(404);
+    throw new Error('Product not found');
   }
 })
 
