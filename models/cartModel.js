@@ -9,7 +9,12 @@ const itemsSchema = mongoose.Schema(
       required: true,
       ref: 'products',
     },
-    image : {type :String}
+    stockId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'stock',
+    },
+    image: { type: String },
   },
   {
     timestamps: true,
@@ -17,15 +22,14 @@ const itemsSchema = mongoose.Schema(
 );
 
 const cartSchema = mongoose.Schema(
-    
   {
-    
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'user',
-        },
-      item :[itemsSchema]
+    },
+  
+    item: [itemsSchema],
   },
   {
     timestamps: true,

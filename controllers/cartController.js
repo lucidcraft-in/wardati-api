@@ -6,7 +6,8 @@ import Stock from '../models/stockModel.js';
 const addCart = asyncHandler(async (req, res) => {
     try {
 
-        const { userId, item } = req.body;
+      const { userId, item } = req.body;
+      
 
             const isStockAvailable = await Stock.find({
                 $and: [
@@ -23,50 +24,66 @@ const addCart = asyncHandler(async (req, res) => {
                     .json({ message: 'Stock is not available' });
            } else {
                
-               const isCartAdded = await Cart.findOne({ userId: userId });
-                   
-                 if (isCartAdded.length === 0) {
-                   const addToCart = new Cart({
-                     userId: req.body.userId,
-                     item: req.body.item,
+             const isCartAdded = await Cart.find({ userId: userId });
+             
+             
+             if (isCartAdded.length != 0) {
+               
+            
+               const findItem  = isCartAdded[0].item.find(
+                 (itm) => itm.itemId.toString() === item.itemId
+               );
+
+           
+       
+               if (!findItem) {
+                 
+                 let obj = {
+                   itemName: item.itemName,
+                   quantity: item.quantity,
+                   itemId: item.itemId,
+                   stockId: item.stockId,
+                 };
+
+                 isCartAdded[0].item.push(obj);
+
+                 await isCartAdded[0].save();
+                 return res
+                   .status(200)
+                   .json({ message: 'Cart item added', isCartAdded });
+               } else {
+              
+
+                    const findItemIndex = isCartAdded[0].item.findIndex(
+                      (itm) => itm.itemId.toString() === item.itemId
+                    );
+   
+
+                 isCartAdded[0].item[findItemIndex].quantity = item.quantity;
+                 isCartAdded[0].item[findItemIndex].stockId = item.stockId;
+                 
+                 
+                 await isCartAdded[0].save();
+                 return res
+                   .status(200)
+                   .json({
+                     message: 'Cart item quantity updated',
+                     isCartAdded,
                    });
-                   const cartCreated = await addToCart.save();
+               }
+             } else {
+              
+               const addToCart = new Cart({
+                 userId: req.body.userId,
+                 item: req.body.item,
+               });
+               const cartCreated = await addToCart.save();
 
-                   
-                    return res
-                      .status(200)
-                      .json({ message: 'New cart created', cartCreated });
-                 } else {
-                    
-                     const findItemIndex = isCartAdded.item.findIndex(
-                       (itm) => itm.itemId.toString() === item.itemId
-                     );
-        
-                   
-
-                       
-                     if (findItemIndex < 0) {
-                       
-                         let obj = {
-                           itemName: item.itemName,
-                           quantity: item.quantity,
-                           itemId: item.itemId,
-                         };
-                       isCartAdded.item.push(obj)
-                     } else {
-                          
-                         isCartAdded.item[findItemIndex].quantity =
-                           item.quantity;
-                     }
- 
-                  
-                     const updateCategory = await isCartAdded.save();
-                      return res
-                        .status(200)
-                        .json({ message: 'Cart item already added'});
-                   
-                  
-                 }
+               return res
+                 .status(200)
+                 .json({ message: 'New cart created', cartCreated });
+             }
+             
             }
 
          
