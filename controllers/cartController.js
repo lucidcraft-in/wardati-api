@@ -7,16 +7,16 @@ const addCart = asyncHandler(async (req, res) => {
     try {
 
       const { userId, item } = req.body;
-      
-
+       
             const isStockAvailable = await Stock.find({
-                $and: [
+              $and: [
                 { $or: [{ product: item.itemId }] },
                 { $or: [{ count: { $gte: item.quantity } }] },
-                ],
+                { $or: [{ _id: item.stockId }] },
+              ],
             });
       
-    
+     
         
            if (isStockAvailable.length === 0) {
                   return res
@@ -26,15 +26,15 @@ const addCart = asyncHandler(async (req, res) => {
                
              const isCartAdded = await Cart.find({ userId: userId });
              
-             
+            
              if (isCartAdded.length != 0) {
-               
+                 
             
                const findItem  = isCartAdded[0].item.find(
                  (itm) => itm.itemId.toString() === item.itemId
                );
 
-           
+         
        
                if (!findItem) {
                  
