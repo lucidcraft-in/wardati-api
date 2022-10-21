@@ -21,7 +21,7 @@ const addCart = asyncHandler(async (req, res) => {
            if (isStockAvailable.length === 0) {
                   return res
                     .status(400)
-                    .json({ message: 'Stock is not available' });
+                    .json({ message: 'Stock is not available', code: 400 });
            } else {
                
              const isCartAdded = await Cart.find({ userId: userId });
@@ -50,7 +50,11 @@ const addCart = asyncHandler(async (req, res) => {
                  await isCartAdded[0].save();
                  return res
                    .status(200)
-                   .json({ message: 'Cart item added', isCartAdded });
+                   .json({
+                     message: 'Cart item added',
+                     isCartAdded,
+                     code: 200,
+                   });
                } else {
               
 
@@ -69,6 +73,7 @@ const addCart = asyncHandler(async (req, res) => {
                    .json({
                      message: 'Cart item quantity updated',
                      isCartAdded,
+                     code :200
                    });
                }
              } else {
@@ -81,7 +86,7 @@ const addCart = asyncHandler(async (req, res) => {
 
                return res
                  .status(200)
-                 .json({ message: 'New cart created', cartCreated });
+                 .json({ message: 'New cart created', cartCreated, code: 200 });
              }
              
             }
