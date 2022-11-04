@@ -22,7 +22,7 @@ router.get('/top', getTopProducts)
 router.get('/priority', getProductByCategoryPriority)
 router.get('/trending', getProductByTrending);
 router.get('/subcategory/:id', getProductBySubCategory);
-router.get('/filter/:data', productFilterAndSort);
+router.get('/filter/:id', productFilterAndSort);
 router
   .route('/:id')
   .get(getProductById)
