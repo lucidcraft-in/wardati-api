@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 
+
 const reviewSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -93,12 +94,23 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     images: [imagesSchema],
-    isTrending :{type:Boolean,default :false}
+    isTrending: { type: Boolean, default: false },
+    priceRangeStart: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    priceRangeEnd: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   }
 );
+
 
 const Product = mongoose.model('Product', productSchema)
 

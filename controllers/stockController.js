@@ -123,14 +123,18 @@ const deleteStock = asyncHandler(async (req, res) => {
 // @route   POST /api/stocks
 // @access  Private/Admin
 const createStock = asyncHandler(async (req, res) => {
- 
+  let categoryId = "";
+  const product = await Product.findById(req.body.product);
 
+  categoryId = product.category;
+  
   const stock = new Stock({
     product: req.body.product,
     price: req.body.price,
     sellingPrice:req.body.sellingPrice,
     count: req.body.count,
     size: req.body.size,
+    category:categoryId,
   });
 
   const createdStock = await stock.save();
@@ -145,15 +149,26 @@ const createStock = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateStock = asyncHandler(async (req, res) => {
   const { price, count,size,sellingPrice } = req.body;
+  console.log(req.body);
+  let categoryId = "";
+  const products = await Product.findById(req.body.product);
+  
+  if (products) {
+    categoryId = products.category;
+   
+  }
+  
 
   const stock = await Stock.findById(req.params.id);
 
+ 
+  
   if (stock) {
     stock.price = price;
     stock.count = count;
     stock.size = size;
      stock.sellingPrice = sellingPrice;
-      
+    stock.category = categoryId;
     
 
     const updatedStock = await stock.save();

@@ -12,6 +12,7 @@ import {
   getProductByCategory,
   getProductByTrending,
   getProductBySubCategory,
+  productFilterAndSort
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js'
 
@@ -21,6 +22,7 @@ router.get('/top', getTopProducts)
 router.get('/priority', getProductByCategoryPriority)
 router.get('/trending', getProductByTrending);
 router.get('/subcategory/:id', getProductBySubCategory);
+router.get('/filter/:data', productFilterAndSort);
 router
   .route('/:id')
   .get(getProductById)

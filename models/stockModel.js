@@ -12,6 +12,11 @@ const stockSchema = mongoose.Schema(
     sellingPrice: { type: Number, required: true },
     count: { type: Number, required: true },
     totalSaleCount: { type: Number },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'category',
+    },
   },
   {
     timestamps: true,
