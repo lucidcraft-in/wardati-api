@@ -57,42 +57,9 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   GET /api/products/category/:id
 // @access  Public
 const getProductByCategory = asyncHandler(async (req, res) => {
-
-  // function shuffle(array) {
-  //   let currentIndex = array.length,  randomIndex;
-  
-  //   // While there remain elements to shuffle.
-  //   while (currentIndex != 0) {
-  
-  //     // Pick a remaining element.
-  //     randomIndex = Math.floor(Math.random() * currentIndex);
-  //     currentIndex--;
-  
-  //     // And swap it with the current element.
-  //     [array[currentIndex], array[randomIndex]] = [
-  //       array[randomIndex], array[currentIndex]];
-  //   }
-  
-  //   return array;
-  // }
-
-
-  // const products = await Stock.aggregate([
-  //   { $match: { category: mongoose.Types.ObjectId(req.params.id)   } },
-  //   {  $lookup: {
-  //     from: 'products',
-  //     localField: 'product',
-  //     foreignField: '_id',
-  //     as: 'product_items',
-  //   },}
-  // ])
-  // if (products) {
-   
-  //   res.json( shuffle(products));
-  // } else {
-  //   res.status(404);
-  //   throw new Error('Product not found');
-  // }
+  let page = 0
+  let count = 0;
+  let pageSize = 0;
 
   let allParams = req.query;
 
@@ -165,8 +132,8 @@ const getProductByCategory = asyncHandler(async (req, res) => {
   const products = await Stock.aggregate(pipeline)
 
   if (products) {
-  //  console.log(products)
-    res.json( products);
+  
+     res.json({ products, page, pages: Math.ceil(count / pageSize) });
   } else {
     res.status(404);
     throw new Error('Product not found');
