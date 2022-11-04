@@ -13,7 +13,7 @@ import subCategoryRoutes from './routes/subCategoryRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import stockRoutes from './routes/stockRoutes.js';
 import banner from './routes/bannerPageRoutes.js';
-import home from './routes/homeBanner.js';
+import home from './routes/homeRoutes.js';
 import wishList from './routes/wishListPageRoute.js';
 import cart from './routes/cartPageRoutes.js';
  

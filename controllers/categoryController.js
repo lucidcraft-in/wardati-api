@@ -147,7 +147,104 @@ const deleteCategory = asyncHandler(async (req, res) => {
       res.status(404)
       throw new Error('Category not found')
     }
-  })
+})
+
+const getCategoriesListHomePage = asyncHandler(async (req, res) => {
+ 
+
+  const category = await Category.find().limit(8);
+
+  let categories = [];
+
+  for (let i = 0; i < category.length; i++) {
+
+     let categoryObject ={}
+
+            const subCategoryList = await SubCategory.find({
+              category: category[i]._id,
+            }).limit(4);
+    
+                    let subCategories = [];
+                              // Sub category
+                  for (let j = 0; j < subCategoryList.length; j++) {
+                                
+                    let subCategoryObject = {};
+
+                            const productList = await Product.find({
+                              subcategory: subCategoryList[j]._id,
+                            }).limit(4);
+                    
+                             let productLists = [];
+                    
+                              for (let k = 0; k < productList.length; k++) {
+                                let products = {}
+
+                                  products.name = productList[k].name;
+                                  products.subCategoryId = productList[i]._id;
+                                  productLists.push(products);
+                                
+                               
+                             }
+                            
+                            
+                  
+                   subCategoryObject.name = subCategoryList[j].name;
+                    subCategoryObject.subCategoryId = category[i]._id;
+                    subCategoryObject.products = productLists;
+                   subCategories.push(subCategoryObject);
+                   
+                }
+ 
+  
+
+    categoryObject.categoryName = category[i].categoryName;
+    categoryObject.categoryId = category[i]._id;
+    categoryObject.subCategory = subCategories;
+    categories.push(categoryObject);
+  
+
+  }
+  
+
+ 
+
+  // let subCategory = [];
+  // for (let i = 0; i < list.length; i++) {
+  //   console.log(list[i]._id);
+  //   let count = await Product.countDocuments({ subcategory: list[i]._id });
+
+  //   let obj = {
+  //     name: list[i].name,
+  //     _id: list[i]._id,
+  //     count: count,
+  //   };
+  //   subCategory.push(obj);
+  // }
+
+  // let query;
+  // if (req.body.subcategory) {
+  //   query = {
+  //     category: req.body.category,
+  //     subcategory: req.body.subcategory,
+  //   };
+  // } else {
+  //   query = {
+  //     category: req.body.category,
+  //   };
+  // }
+
+  // const count = await Product.countDocuments(query);
+  // const products = await Product.find(query)
+  //   .limit(pageSize)
+  //   .skip(pageSize * (page - 1));
+
+  res.json({
+    categories,
+  });
+});
+  
+
+ 
 
 export {
   addCategory,
@@ -156,5 +253,6 @@ export {
   getCategoryById,
   deleteCategory,
   getHomeCategories,
+  getCategoriesListHomePage,
 };
 
