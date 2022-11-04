@@ -58,43 +58,120 @@ const getProductById = asyncHandler(async (req, res) => {
 // @access  Public
 const getProductByCategory = asyncHandler(async (req, res) => {
 
-  function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
+  // function shuffle(array) {
+  //   let currentIndex = array.length,  randomIndex;
   
-    // While there remain elements to shuffle.
-    while (currentIndex != 0) {
+  //   // While there remain elements to shuffle.
+  //   while (currentIndex != 0) {
   
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
+  //     // Pick a remaining element.
+  //     randomIndex = Math.floor(Math.random() * currentIndex);
+  //     currentIndex--;
   
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
+  //     // And swap it with the current element.
+  //     [array[currentIndex], array[randomIndex]] = [
+  //       array[randomIndex], array[currentIndex]];
+  //   }
   
-    return array;
-  }
-  // const products = await Product.find({
-  //   category: req.params.id,
-  // });
-  let productArray = [];
-  const products = await Stock.aggregate([
-    { $match: { category: mongoose.Types.ObjectId(req.params.id)   } },
+  //   return array;
+  // }
+
+
+  // const products = await Stock.aggregate([
+  //   { $match: { category: mongoose.Types.ObjectId(req.params.id)   } },
+  //   {  $lookup: {
+  //     from: 'products',
+  //     localField: 'product',
+  //     foreignField: '_id',
+  //     as: 'product_items',
+  //   },}
+  // ])
+  // if (products) {
+   
+  //   res.json( shuffle(products));
+  // } else {
+  //   res.status(404);
+  //   throw new Error('Product not found');
+  // }
+
+  let allParams = req.query;
+
+
+  const filter = {}
+
+  let sort = {};
+
+  
+  var pipeline = [
+ 
     {  $lookup: {
       from: 'products',
       localField: 'product',
       foreignField: '_id',
       as: 'product_items',
-    },}
-  ])
-  if (products) {
+    },
+    },
    
-    res.json( shuffle(products));
+    
+  ];
+
+
+    
+    //  check if sort contain
+  if (allParams.sort) {
+      
+      let SortVal;
+      if (allParams.sort.replace(/['"]+/g, '') == "asc") {
+         SortVal = 1
+      }
+      else {
+         SortVal = -1
+      }
+     
+      sort = { "sellingPrice": SortVal, }
+      pipeline.push({ $sort: sort });
+   
+  }
+  
+ 
+  //   // check if price range contain
+  if (allParams.price_range) { 
+      
+      let rangeStratVal;
+      let rangeEndVal;
+      let rangeArray;
+      
+      rangeArray = allParams.price_range.split('-');
+
+      rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
+      rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
+     
+      // set value for match
+      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id),"sellingPrice":{$gte: rangeStratVal,$lte:rangeEndVal} }
+      
+      // push to pipeline array
+      pipeline.push({ $match: filter.matchval, })
+    }
+    else {
+      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id) }
+      pipeline.push({ $match: filter.matchval, })
+      // 
+    }
+
+ 
+  
+
+  // // get value from stock using aggrigate
+  const products = await Stock.aggregate(pipeline)
+
+  if (products) {
+  //  console.log(products)
+    res.json( products);
   } else {
     res.status(404);
     throw new Error('Product not found');
   }
+
 });
 
 const getProductBySubCategory = asyncHandler(async (req, res) => {
@@ -301,57 +378,85 @@ const getTopProducts = asyncHandler(async (req, res) => {
 
 const productFilterAndSort = asyncHandler(async (req, res) => {
   
-  
-  function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-  
-    // While there remain elements to shuffle.
-    while (currentIndex != 0) {
-  
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  
-    return array;
-  }
+ 
   // const products = await Product.find({
   //   category: req.params.id,
   // });
-  const filter  = {}
 
-  filter.brand = { "brand": "Fields Of Europe" }
-  filter.category = { "category": mongoose.Types.ObjectId("634f579d1a713667f4570a08")}
+  // get all parameters
+  let allParams = req.query;
+
+
+  const filter = {}
+
+  let sort = {};
+
+  
   var pipeline = [
-    { $limit: 3 },
-    // {$match:{brand : "Fields Of Europe"}},
-    // {$match:{category : mongoose.Types.ObjectId("634f579d1a713667f4570a08")}},
+ 
     {  $lookup: {
       from: 'products',
       localField: 'product',
       foreignField: '_id',
       as: 'product_items',
-    },}
-  ];
-  pipeline.push({ $match: filter.brand })
-  pipeline.push({ $match: filter.category })
-  console.log(pipeline);
-  const products = await Stock.aggregate([
-    { $match: { category: mongoose.Types.ObjectId(req.params.id)   } },
-    {  $lookup: {
-      from: 'products',
-      localField: 'product',
-      foreignField: '_id',
-      as: 'product_items',
-    },}
-  ])
-  if (products) {
+    },
+    },
    
-    res.json( shuffle(products));
+    
+  ];
+
+
+    
+    //  check if sort contain
+  if (allParams.sort) {
+      
+      let SortVal;
+      if (allParams.sort.replace(/['"]+/g, '') == "asc") {
+         SortVal = 1
+      }
+      else {
+         SortVal = -1
+      }
+     
+      sort = { "sellingPrice": SortVal, }
+      pipeline.push({ $sort: sort });
+   
+  }
+  
+ 
+  //   // check if price range contain
+  if (allParams.price_range) { 
+      
+      let rangeStratVal;
+      let rangeEndVal;
+      let rangeArray;
+      
+      rangeArray = allParams.price_range.split('-');
+
+      rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
+      rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
+     
+      // set value for match
+      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id),"sellingPrice":{$gte: rangeStratVal,$lte:rangeEndVal} }
+      
+      // push to pipeline array
+      pipeline.push({ $match: filter.matchval, })
+    }
+    else {
+      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id) }
+      pipeline.push({ $match: filter.matchval, })
+      // 
+    }
+
+ 
+  
+
+  // // get value from stock using aggrigate
+  const products = await Stock.aggregate(pipeline)
+
+  if (products) {
+  //  console.log(products)
+    res.json( products);
   } else {
     res.status(404);
     throw new Error('Product not found');
@@ -359,37 +464,7 @@ const productFilterAndSort = asyncHandler(async (req, res) => {
 
  
   
-  // console.log(filter.brand);
-  // console.log(filter.category);
-  // filter.category = { "category": "634f579d1a713667f4570a08" }
-  
-  // let page = 1;
-  // let limit = limit_;
-  // const options = {
-  //   page, limit,
-  //   collation: {locale: 'en'},
-  //   customLabels: {
-  //       totalDocs: 'totalResults',
-  //       docs: 'events'
-  //   }
-  // };
-  
-  // pipeline.push({$match: {field1: {$gt:25, $lt:32}}})
-  // console.log(pipeline);
-  // aggregate_options.push({ $match: filter.match });
-  // const products = await Product.aggregate(pipeline);
-  // const products = await Product.aggregate(pipeline);
-  // const result = await Product.aggregatePaginate(myAggregate,options);
 
-// const products= await  Product.find({}).populate({
-//   path: '_id',
-//   filter
-  
-//   })
- 
-//   console.log(products);
-  // res.json(products);
-  // const products = await
 });
 
 export {
