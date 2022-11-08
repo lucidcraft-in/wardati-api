@@ -16,6 +16,7 @@ import banner from './routes/bannerPageRoutes.js';
 import home from './routes/homeRoutes.js';
 import wishList from './routes/wishListPageRoute.js';
 import cart from './routes/cartPageRoutes.js';
+import address from './routes/addressRoutes.js';
  
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/api/banner', banner);
 app.use('/api/home', home);
 app.use('/api/wishlist', wishList);
 app.use('/api/cart', cart);
+app.use('/api/address', address);
  
 
   app.get('/', (req, res) => {
