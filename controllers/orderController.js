@@ -233,7 +233,7 @@ const getOrderByUserId = asyncHandler(async (req, res) => {
     
     for (let j = 0; j < orders[i].orderItems.length; j++){
      
-      orderArray.push({"orderId":orders[i]._id,"data":orders[i].orderItems[j]});
+      orderArray.push({"orderId":orders[i]._id,"data":orders[i].orderItems[j],'createdDate':orders[i].createdAt,'updatedDate':orders[i].updatedAt});
     }
   }
 
