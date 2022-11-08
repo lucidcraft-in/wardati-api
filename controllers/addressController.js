@@ -46,8 +46,21 @@ const updateAddress = asyncHandler(async (req, res) => {
     }
 })
 
+const deleteAddress = asyncHandler(async (req, res) => {
+    const address = await Address.findById(req.params.id);
+    if (address) {
+        await address.remove();
+        res.json({ message: 'Address removed' });
+    }
+    else {
+        res.status(404);
+    throw new Error('Address not found');
+    }
+})
+
 export {
     createAddress,
     getAddressByUser,
-    updateAddress
+    updateAddress,
+    deleteAddress,
 }
