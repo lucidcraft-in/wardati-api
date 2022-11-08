@@ -226,8 +226,18 @@ const getMyOrders = asyncHandler(async (req, res) => {
 })
 
 const getOrderByUserId = asyncHandler(async (req, res) => {
+  let orderArray = [];
   const orders = await Order.find({ user: req.params.userId })
-  res.json(orders);
+  for (let i = 0; i < orders.length; i++){
+   
+    
+    for (let j = 0; j < orders[i].orderItems.length; j++){
+     
+      orderArray.push({"orderId":orders[i]._id,"data":orders[i].orderItems[j]});
+    }
+  }
+
+  res.json(orderArray);
 })
 
 // @desc    Get all orders
