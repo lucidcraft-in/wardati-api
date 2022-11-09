@@ -14,8 +14,7 @@ const orderSchema = mongoose.Schema(
         quantity: { type: Number, required: true },
         totalAmount: { type: Number, required: true },
         productDetails: {},
-        stockDetails: {  },
-  
+        stockDetails: {},
       },
     ],
     promotion: {},
@@ -30,6 +29,11 @@ const orderSchema = mongoose.Schema(
       country: { type: String, required: true },
       zip: { type: Number, required: true },
       phone: { type: String, required: true },
+    },
+    addressId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Address',
     },
     paymentMethod: {
       type: Number,
