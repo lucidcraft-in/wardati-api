@@ -130,7 +130,36 @@ const getCartByUser = asyncHandler(async (req, res) => {
    
 });
 
+const checkProductInCart = asyncHandler(async (req, res) => {
+  try {
+    let isProductIncart = false;
 
+    const cart = await Cart.findOne({ userId: req.params.id, });
+    if (cart) {
+    
+      for (let index = 0; index < cart.item.length; index++) {
+        if (cart.item[index].itemId == req.params.itemId && cart.item[index].stockId==req.params.stockId) {
+        
+          isProductIncart = true;
+         
+          return res.status(200).json(isProductIncart);
+        }
+        else {
+          isProductIncart = false;
+        }
+        
+      }
+     
+     //  await cart.save();
+
+      return res.status(200).json(isProductIncart);
+   } else {
+     return res.status(400).json({ message: "No items added on cart" });
+   }
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+})
 
 
 const removeOnCart = asyncHandler(async (req, res) => {
@@ -152,4 +181,4 @@ const removeOnCart = asyncHandler(async (req, res) => {
   }
   
 });
-export { addCart, getCartByUser, removeOnCart };
+export { addCart, getCartByUser, removeOnCart,checkProductInCart };
