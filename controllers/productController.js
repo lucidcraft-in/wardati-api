@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
 import Stock from '../models/stockModel.js';
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -57,88 +57,101 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   GET /api/products/category/:id
 // @access  Public
 const getProductByCategory = asyncHandler(async (req, res) => {
-  let page = 0
+  let page = 0;
   let count = 0;
   let pageSize = 0;
 
   let allParams = req.query;
 
-
-  const filter = {}
+  const filter = {};
 
   let sort = {};
-
-  
+  var searchVal = '';
   var pipeline = [
- 
-    {  $lookup: {
-      from: 'products',
-      localField: 'product',
-      foreignField: '_id',
-      as: 'product_items',
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'product',
+        foreignField: '_id',
+        as: 'product_items',
+      },
     },
-    },
-   
-    
   ];
 
-
-    
-    //  check if sort contain
+  //  check if sort contain
   if (allParams.sort) {
-      
-      let SortVal;
-      if (allParams.sort.replace(/['"]+/g, '') == "asc") {
-         SortVal = 1
-      }
-      else {
-         SortVal = -1
-      }
-     
-      sort = { "sellingPrice": SortVal, }
-      pipeline.push({ $sort: sort });
-   
+    let SortVal;
+    if (allParams.sort.replace(/['"]+/g, '') == 'asc') {
+      SortVal = 1;
+    } else {
+      SortVal = -1;
+    }
+
+    sort = { sellingPrice: SortVal };
+    pipeline.push({ $sort: sort });
   }
-  
- 
+
   //   // check if price range contain
-  if (allParams.price_range) { 
-      
-      let rangeStratVal;
-      let rangeEndVal;
-      let rangeArray;
-      
-      rangeArray = allParams.price_range.split('-');
+  if (allParams.price_range) {
+    let rangeStratVal;
+    let rangeEndVal;
+    let rangeArray;
 
-      rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
-      rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
-     
+    rangeArray = allParams.price_range.split('-');
+
+    rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
+    rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
+
+    // check product name search parameter
+
+    if (allParams.spn) {
+      searchVal = allParams.spn.replace(/['"]+/g, '');
+
+      filter.matchval = {
+        category: mongoose.Types.ObjectId(req.params.id),
+
+        sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+
+        'product_items.name': { $regex: searchVal, $options: 'i' },
+      };
+    } else {
       // set value for match
-      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id),"sellingPrice":{$gte: rangeStratVal,$lte:rangeEndVal} }
-      
-      // push to pipeline array
-      pipeline.push({ $match: filter.matchval, })
-    }
-    else {
-      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id) }
-      pipeline.push({ $match: filter.matchval, })
-      // 
+      filter.matchval = {
+        category: mongoose.Types.ObjectId(req.params.id),
+        sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+        // product:mongoose.Types.ObjectId("634fc0adad67a6b550f04061")
+      };
     }
 
- 
-  
+    // push to pipeline array
+    pipeline.push({ $match: filter.matchval });
+  } else {
+    // check product name search parameter
+    if (allParams.spn) {
+      searchVal = allParams.spn.replace(/['"]+/g, '');
+      filter.matchval = {
+        category: mongoose.Types.ObjectId(req.params.id),
+        'product_items.name': { $regex: searchVal, $options: 'i' },
+      };
+    } else {
+      filter.matchval = {
+        category: mongoose.Types.ObjectId(req.params.id),
+      };
+    }
+    pipeline.push({ $match: filter.matchval });
+    //
+  }
+
 
   // // get value from stock using aggrigate
-  const products = await Stock.aggregate(pipeline)
+  const products = await Stock.aggregate(pipeline);
 
   if (products) {
-  
-     res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
   } else {
     res.status(404);
     throw new Error('Product not found');
   }
-
 });
 
 const getProductBySubCategory = asyncHandler(async (req, res) => {
@@ -344,8 +357,6 @@ const getTopProducts = asyncHandler(async (req, res) => {
 });
 
 const productFilterAndSort = asyncHandler(async (req, res) => {
-  
- 
   // const products = await Product.find({
   //   category: req.params.id,
   // });
@@ -353,85 +364,69 @@ const productFilterAndSort = asyncHandler(async (req, res) => {
   // get all parameters
   let allParams = req.query;
 
-
-  const filter = {}
+  const filter = {};
 
   let sort = {};
 
-  
   var pipeline = [
- 
-    {  $lookup: {
-      from: 'products',
-      localField: 'product',
-      foreignField: '_id',
-      as: 'product_items',
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'product',
+        foreignField: '_id',
+        as: 'product_items',
+      },
     },
-    },
-   
-    
   ];
 
-
-    
-    //  check if sort contain
+  //  check if sort contain
   if (allParams.sort) {
-      
-      let SortVal;
-      if (allParams.sort.replace(/['"]+/g, '') == "asc") {
-         SortVal = 1
-      }
-      else {
-         SortVal = -1
-      }
-     
-      sort = { "sellingPrice": SortVal, }
-      pipeline.push({ $sort: sort });
-   
+    let SortVal;
+    if (allParams.sort.replace(/['"]+/g, '') == 'asc') {
+      SortVal = 1;
+    } else {
+      SortVal = -1;
+    }
+
+    sort = { sellingPrice: SortVal };
+    pipeline.push({ $sort: sort });
   }
-  
- 
+
   //   // check if price range contain
-  if (allParams.price_range) { 
-      
-      let rangeStratVal;
-      let rangeEndVal;
-      let rangeArray;
-      
-      rangeArray = allParams.price_range.split('-');
+  if (allParams.price_range) {
+    let rangeStratVal;
+    let rangeEndVal;
+    let rangeArray;
 
-      rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
-      rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
-     
-      // set value for match
-      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id),"sellingPrice":{$gte: rangeStratVal,$lte:rangeEndVal} }
-      
-      // push to pipeline array
-      pipeline.push({ $match: filter.matchval, })
-    }
-    else {
-      filter.matchval = { "category": mongoose.Types.ObjectId(req.params.id) }
-      pipeline.push({ $match: filter.matchval, })
-      // 
-    }
+    rangeArray = allParams.price_range.split('-');
 
- 
-  
+    rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
+    rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
+
+    // set value for match
+    filter.matchval = {
+      category: mongoose.Types.ObjectId(req.params.id),
+      sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+    };
+
+    // push to pipeline array
+    pipeline.push({ $match: filter.matchval });
+  } else {
+    filter.matchval = { category: mongoose.Types.ObjectId(req.params.id) };
+    pipeline.push({ $match: filter.matchval });
+    //
+  }
 
   // // get value from stock using aggrigate
-  const products = await Stock.aggregate(pipeline)
+  const products = await Stock.aggregate(pipeline);
 
   if (products) {
-  //  console.log(products)
-    res.json( products);
+    //  console.log(products)
+    res.json(products);
   } else {
     res.status(404);
     throw new Error('Product not found');
   }
-
- 
-  
-
 });
 
 export {
@@ -446,5 +441,5 @@ export {
   getProductByCategory,
   getProductByTrending,
   getProductBySubCategory,
-  productFilterAndSort
+  productFilterAndSort,
 };
