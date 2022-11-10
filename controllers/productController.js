@@ -170,10 +170,10 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
 const getProductByTrending = asyncHandler(async (req, res) => {
   const products = await Product.find({
     isTrending: true,
-  });
+  }).limit(10)
 
   if (products) {
-    res.json(products);
+    res.json({products});
   } else {
     res.status(404);
     throw new Error('Product not found');
