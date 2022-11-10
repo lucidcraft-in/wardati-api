@@ -193,7 +193,7 @@ const getProductByCategoryPriority = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const category = await Category.find().limit(3);
+  const category = await Category.find().sort({ priority: 1 }).limit(3);
   const categoryId = [];
   const products = [];
 
