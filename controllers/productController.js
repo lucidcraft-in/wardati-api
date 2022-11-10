@@ -202,7 +202,7 @@ const getProductByCategoryPriority = asyncHandler(async (req, res) => {
 
     const result = await Product.find({
       $and: [{ category: category[i]['_id'] }, { ...keyword }],
-    });
+    }).limit(10);
 
     if (result.length > 0) {
       products.push({
