@@ -20,7 +20,9 @@ const createAddress = asyncHandler(async (req, res) => {
 
 const getAddressByUser = asyncHandler(async (req, res) => {
     try {
-        const address = await Address.findOne({ userId: req.params.id });
+    
+        const address = await Address.find({ user: req.params.id });
+        
         return res.status(200).json(address);
     } catch (error) {
         return res.status(500).json({ message: error });
