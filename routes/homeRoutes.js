@@ -4,7 +4,10 @@ const router = express.Router();
 
 import { getTopSelling } from '../controllers/stockController.js';
 import { getBanner} from '../controllers/bannerPageController.js';
-import { getCategoriesListHomePage } from '../controllers/categoryController.js';
+import {
+  getCategoriesListHomePage,
+  getCategoriesListByPriority,
+} from '../controllers/categoryController.js';
  
 
 // Banner
@@ -17,5 +20,5 @@ router.route('/topselling').get(getTopSelling);
 
 // Categories list with sub category and products
 router.route('/categories').get(getCategoriesListHomePage);
-
+router.route('/category/priority').get(getCategoriesListByPriority);
 export default router;

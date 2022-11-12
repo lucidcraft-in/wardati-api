@@ -21,6 +21,7 @@ const checkout = asyncHandler(async (req, res) => {
     promotionOfferPrice,
     promotion,
     totalAmount,
+    addressId,
   } = req.body;
 
   if (orderItems && orderItems.length === 0) {
@@ -79,6 +80,7 @@ const checkout = asyncHandler(async (req, res) => {
       promotionOfferPrice,
       promotion,
       totalAmount,
+      addressId,
     });
 
     const createdOrder = await order.save();

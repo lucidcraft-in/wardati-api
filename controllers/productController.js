@@ -170,10 +170,10 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
 const getProductByTrending = asyncHandler(async (req, res) => {
   const products = await Product.find({
     isTrending: true,
-  });
+  }).limit(10)
 
   if (products) {
-    res.json(products);
+    res.json({products});
   } else {
     res.status(404);
     throw new Error('Product not found');
@@ -193,7 +193,7 @@ const getProductByCategoryPriority = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const category = await Category.find().limit(3);
+  const category = await Category.find().sort({ priority: 1 }).limit(3);
   const categoryId = [];
   const products = [];
 
@@ -202,7 +202,7 @@ const getProductByCategoryPriority = asyncHandler(async (req, res) => {
 
     const result = await Product.find({
       $and: [{ category: category[i]['_id'] }, { ...keyword }],
-    });
+    }).limit(10);
 
     if (result.length > 0) {
       products.push({

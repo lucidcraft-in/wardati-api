@@ -14,8 +14,8 @@ const addressSchema = mongoose.Schema(
                 address2: { type: String },
                 apartment: { type: String },
                 city: { type: String, required: true },
-                region: { type: String, required: true },
-                country: { type: String, required: true },
+                region: { type: String,  },
+                country: { type: String,  },
                 zip: { type: Number, required: true },
                 phone: { type: String, required: true },
             }
@@ -28,8 +28,8 @@ const addressSchema = mongoose.Schema(
                 address2: { type: String },
                 apartment: { type: String },
                 city: { type: String, required: true },
-                region: { type: String, required: true },
-                country: { type: String, required: true },
+                region: { type: String,  },
+                country: { type: String,  },
                 zip: { type: Number, required: true },
                 phone: { type: String, required: true },
             }
