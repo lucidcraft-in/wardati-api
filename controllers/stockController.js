@@ -125,16 +125,19 @@ const deleteStock = asyncHandler(async (req, res) => {
 const createStock = asyncHandler(async (req, res) => {
   let categoryId = "";
   const product = await Product.findById(req.body.product);
+ 
 
   categoryId = product.category;
+  let subCategory = product.subcategory ? product.subcategory : '';
   
   const stock = new Stock({
     product: req.body.product,
     price: req.body.price,
-    sellingPrice:req.body.sellingPrice,
+    sellingPrice: req.body.sellingPrice,
     count: req.body.count,
     size: req.body.size,
-    category:categoryId,
+    category: categoryId,
+    subCategory: subCategory,
   });
 
   const createdStock = await stock.save();
@@ -149,13 +152,14 @@ const createStock = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateStock = asyncHandler(async (req, res) => {
   const { price, count,size,sellingPrice } = req.body;
-  console.log(req.body);
+ 
   let categoryId = "";
+   let subCategory = '';
   const products = await Product.findById(req.body.product);
   
   if (products) {
     categoryId = products.category;
-   
+    subCategory = products.subcategory;
   }
   
 
@@ -169,7 +173,7 @@ const updateStock = asyncHandler(async (req, res) => {
     stock.size = size;
      stock.sellingPrice = sellingPrice;
     stock.category = categoryId;
-    
+    stock.subCategory = subCategory;
 
     const updatedStock = await stock.save();
     res.json(updatedStock);

@@ -62,9 +62,9 @@ const productSchema = mongoose.Schema(
       ref: 'category',
     },
     subcategory: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       // required: true,
-      default: '',
+      ref: 'subcategory',
     },
 
     description: {
@@ -82,13 +82,13 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    
+
     countInStock: {
       type: Number,
       required: true,
       default: 0,
     },
-    
+
     promotionPercentage: {
       type: Number,
       default: 0,

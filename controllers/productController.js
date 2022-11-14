@@ -155,15 +155,117 @@ const getProductByCategory = asyncHandler(async (req, res) => {
 });
 
 const getProductBySubCategory = asyncHandler(async (req, res) => {
-  const products = await Product.find({
-    subcategory: req.params.id,
-  });
+  try {
+    let page = 0;
+    let count = 0;
+    let pageSize = 0;
 
-  if (products) {
-    res.json(products);
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
+    let allParams = req.query;
+
+    const filter = {};
+
+    let sort = {};
+    var searchVal = '';
+    var pipeline = [
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'product',
+          foreignField: '_id',
+          as: 'product_items',
+        },
+      },
+    ];
+
+    //  check if sort contain
+    if (allParams.sort) {
+      let SortVal;
+      if (allParams.sort.replace(/['"]+/g, '') == 'asc') {
+        SortVal = 1;
+      } else {
+        SortVal = -1;
+      }
+
+      sort = { sellingPrice: SortVal };
+      pipeline.push({ $sort: sort });
+    }
+
+    //   // check if price range contain
+    if (allParams.price_range) {
+      let rangeStratVal;
+      let rangeEndVal;
+      let rangeArray;
+
+      rangeArray = allParams.price_range.split('-');
+
+      rangeStratVal = parseInt(rangeArray[0].replace(/['"]+/g, ''));
+      rangeEndVal = parseInt(rangeArray[1].replace(/['"]+/g, ''));
+
+      // check product name search parameter
+
+      if (allParams.spn) {
+        searchVal = allParams.spn.replace(/['"]+/g, '');
+
+        filter.matchval = {
+          subcategory: mongoose.Types.ObjectId(req.params.id),
+
+          sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+
+          'product_items.name': { $regex: searchVal, $options: 'i' },
+        };
+      } else {
+        // set value for match
+        filter.matchval = {
+          subcategory: mongoose.Types.ObjectId(req.params.id),
+          sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+          // product:mongoose.Types.ObjectId("634fc0adad67a6b550f04061")
+        };
+      }
+
+      // push to pipeline array
+      pipeline.push({ $match: filter.matchval });
+    } else {
+      // check product name search parameter
+      if (allParams.spn) {
+        searchVal = allParams.spn.replace(/['"]+/g, '');
+        filter.matchval = {
+          subcategory: mongoose.Types.ObjectId(req.params.id),
+          'product_items.name': { $regex: searchVal, $options: 'i' },
+        };
+      } else {
+        filter.matchval = {
+          subcategory: mongoose.Types.ObjectId(req.params.id),
+        };
+      }
+      pipeline.push({ $match: filter.matchval });
+      //
+    }
+console.log(pipeline);
+    // // get value from stock using aggrigate
+    const products = await Stock.aggregate([
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'product',
+          foreignField: '_id',
+          as: 'product_items',
+        },
+      },
+      {
+        $match: {
+          subcategory: new mongoose.Types.ObjectId('634fa24f765887ffd80441dc'),
+        },
+      },
+    ]);
+
+    if (products) {
+      res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    } else {
+      res.status(404);
+      throw new Error('Product not found');
+    }
+  } catch (error) {
+    res.status(500).json({error});
   }
 });
 
@@ -253,8 +355,7 @@ const createProduct = asyncHandler(async (req, res) => {
     subcategory: req.body.selectedSubCategory,
     promotionPercentage: req.body.promotionPercentage,
     isTrending: req.body.isTrending,
-    priceRangeStart: req.body.priceRangeStart,
-    priceRangeEnd: req.body.priceRangeEnd,
+     
   });
 
   const createdProduct = await product.save();
@@ -296,8 +397,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.stock = stockArray;
     product.promotionPercentage = promotionPercentage;
     product.isTrending = isTrending;
-    (product.priceRangeStart = priceRangeStart),
-      (product.priceRangeEnd = priceRangeEnd);
+   
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } else {

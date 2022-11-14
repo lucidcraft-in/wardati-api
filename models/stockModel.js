@@ -17,6 +17,11 @@ const stockSchema = mongoose.Schema(
       required: true,
       ref: 'category',
     },
+    subCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      // required: true,
+      ref: 'SubCategory',
+    },
   },
   {
     timestamps: true,
