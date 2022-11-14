@@ -269,32 +269,34 @@ const getProductByTrending = asyncHandler(async (req, res) => {
 });
 
 const getProductByCategoryPriority = asyncHandler(async (req, res) => {
-  const pageSize = 10;
-  const page = Number(req.query.pageNumber) || 1;
-
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: 'i',
-        },
-      }
-    : {};
+ 
 
   const category = await Category.find().sort({ priority: 1 }).limit(3);
-  const categoryId = [];
+ 
   const products = [];
 
   for (let i = 0; i < category.length; i++) {
-    categoryId.push(category[i]['_id']);
 
-    const result = await Product.find({
-      $and: [{ category: category[i]['_id'] }, { ...keyword }],
-    }).limit(10);
+      const stocks = await Stock.aggregate([
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product',
+            foreignField: '_id',
+            as: 'product',
+          },
+        },
+        { $match: { category: category[i]['_id'] } },
+      ]).limit(10);
+   
 
-    if (result.length > 0) {
+    // const result = await Product.find({
+    //   $and: [{ category: category[i]['_id'] } ],
+    // }).limit(10);
+
+    if (stocks.length > 0) {
       products.push({
-        product: result,
+        stocks: stocks,
         category: category[i]['categoryName'],
         title: category[i]['title'],
       });
