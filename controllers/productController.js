@@ -207,7 +207,7 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
         searchVal = allParams.spn.replace(/['"]+/g, '');
 
         filter.matchval = {
-          subcategory: mongoose.Types.ObjectId(req.params.id),
+          subCategory: mongoose.Types.ObjectId(req.params.id),
 
           sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
 
@@ -216,7 +216,7 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
       } else {
         // set value for match
         filter.matchval = {
-          subcategory: mongoose.Types.ObjectId(req.params.id),
+          subCategory: mongoose.Types.ObjectId(req.params.id),
           sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
           // product:mongoose.Types.ObjectId("634fc0adad67a6b550f04061")
         };
@@ -229,12 +229,12 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
       if (allParams.spn) {
         searchVal = allParams.spn.replace(/['"]+/g, '');
         filter.matchval = {
-          subcategory: mongoose.Types.ObjectId(req.params.id),
+          subCategory: mongoose.Types.ObjectId(req.params.id),
           'product_items.name': { $regex: searchVal, $options: 'i' },
         };
       } else {
         filter.matchval = {
-          subcategory: mongoose.Types.ObjectId(req.params.id),
+          subCategory: mongoose.Types.ObjectId(req.params.id),
         };
       }
       pipeline.push({ $match: filter.matchval });
@@ -242,21 +242,7 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
     }
 console.log(pipeline);
     // // get value from stock using aggrigate
-    const products = await Stock.aggregate([
-      {
-        $lookup: {
-          from: 'products',
-          localField: 'product',
-          foreignField: '_id',
-          as: 'product_items',
-        },
-      },
-      {
-        $match: {
-          subcategory: new mongoose.Types.ObjectId('634fa24f765887ffd80441dc'),
-        },
-      },
-    ]);
+   const products = await Stock.aggregate(pipeline);
 
     if (products) {
       res.json({ products, page, pages: Math.ceil(count / pageSize) });
