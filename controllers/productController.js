@@ -256,9 +256,19 @@ console.log(pipeline);
 });
 
 const getProductByTrending = asyncHandler(async (req, res) => {
-  const products = await Product.find({
-    isTrending: true,
-  }).limit(10)
+ 
+
+  const products = await Stock.aggregate([
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'product',
+        foreignField: '_id',
+        as: 'product',
+      },
+    },
+    { $match: { 'product.isTrending': true } },
+  ]).limit(10);
 
   if (products) {
     res.json({products});
