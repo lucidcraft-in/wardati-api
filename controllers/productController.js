@@ -527,6 +527,24 @@ const productFilterAndSort = asyncHandler(async (req, res) => {
   }
 });
 
+const nearestProducts = asyncHandler(async (req, res) => {
+
+  try {
+     const afterProduct = await Product.find({
+       _id: { $gt: req.params.id },
+     }).limit(1);
+    
+      const beforeProduct = await Product.find({
+        _id: { $lt: req.params.id },
+      }).limit(1);
+
+
+     res.status(200).json({ afterProduct, beforeProduct });
+  } catch (error) {
+     res.status(500).json(error);
+  }
+});
+
 export {
   getProducts,
   getProductById,
@@ -540,4 +558,5 @@ export {
   getProductByTrending,
   getProductBySubCategory,
   productFilterAndSort,
+  nearestProducts,
 };

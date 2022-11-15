@@ -12,7 +12,8 @@ import {
   getProductByCategory,
   getProductByTrending,
   getProductBySubCategory,
-  productFilterAndSort
+  productFilterAndSort,
+  nearestProducts
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js'
 
@@ -29,6 +30,7 @@ router
   .delete(protect, admin, deleteProduct)
   .put(protect, admin, updateProduct)
 
-  router.get('/category/:id', getProductByCategory);
+router.get('/category/:id', getProductByCategory);
+router.get('/nearest/:id', nearestProducts);
 
 export default router
