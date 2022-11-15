@@ -53,7 +53,7 @@ const getTopSelling = asyncHandler(async (req, res) => {
         from: 'products',
         localField: 'product',
         foreignField: '_id',
-        as: 'stock_items',
+        as: 'product',
       },
     },
     { $sort: { totalSaleCount: -1 } },
