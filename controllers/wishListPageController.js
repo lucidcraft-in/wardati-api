@@ -68,7 +68,10 @@ const getWishListByUser = asyncHandler(async (req, res) => {
 });
 
 const getWishListByProduct = asyncHandler(async (req, res) => {
-  const wishList = await WishList.findOne({ itemId: req.params.id });
+  const wishList = await WishList.findOne({
+    itemId: req.params.id,
+    userId: req.params.user,
+  });
 
   if (wishList) {
     res.json(wishList);
