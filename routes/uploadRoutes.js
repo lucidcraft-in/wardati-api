@@ -80,8 +80,8 @@ const router = express.Router()
 
 // Upload to s3
 aws.config.update({
-  secretAccessKey: 'SvHvsUKRIPOKGVay/4u8Bf72PNab4+Optf2PAnVD',
-  accessKeyId: 'AKIAVJD27CQY53BJTYML',
+  secretAccessKey: '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',
+  accessKeyId: 'AKIAVJD27CQYQDH63EBM',
   region: 'me-central-1',
 });
 
@@ -101,7 +101,7 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: 'wardati',
-    // acl: 'public-read',
+    acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: 'TESTING_META_DATA!' });
     },
