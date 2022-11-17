@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import User from '../models/userModel.js';
+import Cart from '../models/cartModel.js';
 import Stock from '../models/stockModel.js';
 import Product from '../models/productModel.js';
 
@@ -102,6 +102,10 @@ const checkout = asyncHandler(async (req, res) => {
           { new: true }
         );
       }
+
+
+      // Remove items from cart
+       await Cart.deleteMany({ userId: req.user._id });
     }
     return res
       .status(200)
