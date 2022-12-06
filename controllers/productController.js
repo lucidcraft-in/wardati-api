@@ -110,7 +110,10 @@ const getProductByCategory = asyncHandler(async (req, res) => {
       filter.matchval = {
         category: mongoose.Types.ObjectId(req.params.id),
 
-        sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+        sellingPrice:
+          rangeEndVal === 0
+            ? { $gte: rangeStratVal  }
+            : { $gte: rangeStratVal, $lte: rangeEndVal },
 
         'product_items.name': { $regex: searchVal, $options: 'i' },
       };
@@ -118,7 +121,8 @@ const getProductByCategory = asyncHandler(async (req, res) => {
       // set value for match
       filter.matchval = {
         category: mongoose.Types.ObjectId(req.params.id),
-        sellingPrice: { $gte: rangeStratVal, $lte: rangeEndVal },
+        sellingPrice:  rangeEndVal === 0
+            ? { $gte: rangeStratVal  } :{ $gte: rangeStratVal, $lte: rangeEndVal },
         // product:mongoose.Types.ObjectId("634fc0adad67a6b550f04061")
       };
     }
@@ -141,7 +145,7 @@ const getProductByCategory = asyncHandler(async (req, res) => {
     pipeline.push({ $match: filter.matchval });
     //
   }
-
+ 
 
   // // get value from stock using aggrigate
   const products = await Stock.aggregate(pipeline);
