@@ -80,9 +80,9 @@ const router = express.Router()
 
 // Upload to s3
 aws.config.update({
-  secretAccessKey: '31bKJ4bObGTt/Z4re1vIkl0iHiCCCl53bW/nOGFF',
-  accessKeyId: 'AKIAVJD27CQYQDH63EBM',
-  region: 'me-central-1',
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  region: 'ap-southeast-1',
 });
 
 const s3 = new aws.S3();
@@ -100,7 +100,7 @@ const upload = multer({
   fileFilter,
   storage: multerS3({
     s3,
-    bucket: 'wardati',
+    bucket: 'wardathi-s3',
     acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: 'TESTING_META_DATA!' });
@@ -115,13 +115,13 @@ const upload = multer({
 
 
 router.post('/', upload.single('image'), (req, res) => {
-  // console.log(`uploads/${req.file.filename}`);
+  
    
      let myFile = req.file.originalname.split('.');
      const fileType = myFile[myFile.length - 1];
 
      const params = {
-       Bucket: 'wardati',
+       Bucket: process.env.AWS_BUCKET_NAME,
        Key: `${fileType}`,
        Body: req.file,
      };
