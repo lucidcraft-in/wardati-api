@@ -29,6 +29,8 @@ app.use(express.json());
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
+app.use(express.static(path.resolve(__dirname, './build')));
+
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
