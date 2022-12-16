@@ -180,7 +180,7 @@ const getCategoriesListHomePage = asyncHandler(async (req, res) => {
                                 let products = {}
 
                                   products.name = productList[k].name;
-                                  products.subCategoryId = productList[k]._id;
+                                  products.productId = productList[k]._id;
                                   productLists.push(products);
                                 
                                
@@ -189,7 +189,7 @@ const getCategoriesListHomePage = asyncHandler(async (req, res) => {
                             
                   
                    subCategoryObject.name = subCategoryList[j].name;
-                    subCategoryObject.subCategoryId = category[i]._id;
+                    subCategoryObject.subCategoryId = subCategoryList[j]._id;
                     subCategoryObject.products = productLists;
                    subCategories.push(subCategoryObject);
                    
