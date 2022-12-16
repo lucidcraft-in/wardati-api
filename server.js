@@ -29,7 +29,7 @@ app.use(express.json());
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-app.use(express.static(path.resolve(__dirname, './build')));
+app.use(express.static(path.join(__dirname, './build')));
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
@@ -46,8 +46,8 @@ app.use('/api/cart', cart);
 app.use('/api/address', address);
  
 
-  app.get('/', (req, res) => {
-    res.send('API is running....');
+  app.get('*', (req, res) => {
+   res.sendFile(path.join(__dirname,   './build', 'index.html'));
   });
 
 const PORT = process.env.PORT || 5000;
