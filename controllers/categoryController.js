@@ -156,6 +156,8 @@ const getCategoriesListHomePage = asyncHandler(async (req, res) => {
 
   let categories = [];
 
+  
+
   for (let i = 0; i < category.length; i++) {
 
      let categoryObject ={}
@@ -179,20 +181,21 @@ const getCategoriesListHomePage = asyncHandler(async (req, res) => {
                               for (let k = 0; k < productList.length; k++) {
                                 let products = {}
 
-                                  products.name = productList[k].name;
+                                  products.productName = productList[k].name;
                                   products.productId = productList[k]._id;
                                   productLists.push(products);
                                 
                                
                              }
                             
-                            
+                          
                   
-                   subCategoryObject.name = subCategoryList[j].name;
+                   subCategoryObject.subCategoryName = subCategoryList[j].name;
                     subCategoryObject.subCategoryId = subCategoryList[j]._id;
                     subCategoryObject.products = productLists;
+                    console.log(subCategoryObject);
                    subCategories.push(subCategoryObject);
-                   
+                     
                 }
  
   
@@ -242,13 +245,13 @@ for (let i = 0; i < category.length; i++) {
     for (let k = 0; k < productList.length; k++) {
       let products = {};
 
-      products.name = productList[k].name;
-      products.subCategoryId = productList[k]._id;
+      products.productName = productList[k].name;
+      products.productId = productList[k]._id;
       productLists.push(products);
     }
 
-    subCategoryObject.name = subCategoryList[j].name;
-    subCategoryObject.subCategoryId = category[i]._id;
+    subCategoryObject.subCategoryName = subCategoryList[j].name;
+    subCategoryObject.subCategoryId = subCategoryList[j]._id;
     subCategoryObject.products = productLists;
     subCategories.push(subCategoryObject);
   }
