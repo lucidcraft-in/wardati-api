@@ -129,13 +129,13 @@ router.post('/', upload.single('image'), (req, res) => {
 
   s3.upload(params, (error, data) => {
        
- 
+ console.log(process.env.AWS_SECRET_ACCESS_KEY);
+console.log(error);
+       if (error) {
+         res.status(500).send(error);
+       }
 
-      //  if (error) {
-      //    res.status(500).send(error);
-      //  }
-
-       res.status(200).send(req.file.location);
+      //  res.status(200).send(req.file.location);
      });
 })
 
