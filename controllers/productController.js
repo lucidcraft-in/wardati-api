@@ -148,10 +148,12 @@ const getProductByCategory = asyncHandler(async (req, res) => {
  
 
   // // get value from stock using aggrigate
-  const products = await Stock.aggregate(pipeline);
+  const products = await Stock.aggregate(pipeline)
+    .skip(parseInt(req.params.count))
+    .limit(10);
 
   if (products) {
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    res.json({ products, page, pages: Math.ceil(products.length / 2) });
   } else {
     res.status(404);
     throw new Error('Product not found');

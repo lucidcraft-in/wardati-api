@@ -30,7 +30,7 @@ router
   .delete(protect, admin, deleteProduct)
   .put(protect, admin, updateProduct)
 
-router.get('/category/:id', getProductByCategory);
+router.get('/category/:id/:count', getProductByCategory);
 router.get('/nearest/:id', nearestProducts);
 
 export default router
