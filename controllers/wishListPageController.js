@@ -14,8 +14,14 @@ const isWishlistAdded = await WishList.find({ itemId: req.body.itemId });
         userId: req.body.userId,
         itemId: req.body.itemId,
       });
+    
       const createdWishList = await wishList.save();
-      res.status(200).json(createdWishList);
+      // console.log("dhdsdhdhdhddhdhhd");
+      // console.log(createdWishList);
+      // return res.status(200).json(createdWishList);
+      return res
+                 .status(200)
+                 .json({ message: 'Wish List added', createdWishList, code: 200 });
     }
 
 });
@@ -52,6 +58,7 @@ const getWishListByUser = asyncHandler(async (req, res) => {
 
   const byUser = wishList.map(
     (list) => {
+
       if (list.userId.toString() === req.params.id) {
         return list;
       }
@@ -59,6 +66,7 @@ const getWishListByUser = asyncHandler(async (req, res) => {
       
   );
   
+
   if (byUser) {
     res.json(byUser);
   } else {
