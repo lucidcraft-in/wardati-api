@@ -238,7 +238,7 @@ const getOrderByUserId = asyncHandler(async (req, res) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate('user', 'id name');
+  const orders = await Order.find({}).sort({"_id":-1}).populate('user', 'id name');
   res.json(orders);
 });
 
