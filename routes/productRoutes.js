@@ -22,7 +22,7 @@ router.route('/:id/reviews').post(protect, createProductReview)
 router.get('/top', getTopProducts)
 router.get('/priority', getProductByCategoryPriority)
 router.get('/trending', getProductByTrending);
-router.get('/subcategory/:id', getProductBySubCategory);
+router.get('/subcategory/:count/:id/', getProductBySubCategory);
 router.get('/filter/:id', productFilterAndSort);
 router
   .route('/:id')
@@ -30,7 +30,7 @@ router
   .delete(protect, admin, deleteProduct)
   .put(protect, admin, updateProduct)
 
-router.get('/category/:id/:count', getProductByCategory);
+router.get('/category/:count/:id', getProductByCategory);
 router.get('/nearest/:id', nearestProducts);
 
 export default router

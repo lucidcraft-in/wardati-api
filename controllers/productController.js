@@ -147,13 +147,17 @@ const getProductByCategory = asyncHandler(async (req, res) => {
   }
  
 
-  // // get value from stock using aggrigate
+  // // get value from stock using aggregate
   const products = await Stock.aggregate(pipeline)
     .skip(parseInt(req.params.count))
-    .limit(10);
+    .limit(15);
 
+    const productsCount = await Stock.countDocuments(pipeline);
+
+  
+  
   if (products) {
-    res.json({ products, page, pages: Math.ceil(products.length / 2) });
+    res.json({ products, page, pages: Math.ceil(productsCount / 15) });
   } else {
     res.status(404);
     throw new Error('Product not found');
@@ -246,12 +250,16 @@ const getProductBySubCategory = asyncHandler(async (req, res) => {
       pipeline.push({ $match: filter.matchval });
       //
     }
-console.log(pipeline);
+ 
     // // get value from stock using aggrigate
-   const products = await Stock.aggregate(pipeline);
+   const products = await Stock.aggregate(pipeline)
+     .skip(parseInt(req.params.count))
+     .limit(15);
+
+   const productsCount = await Stock.countDocuments(pipeline);
 
     if (products) {
-      res.json({ products, page, pages: Math.ceil(count / pageSize) });
+      res.json({ products, page, pages: Math.ceil(productsCount / 15) });
     } else {
       res.status(404);
       throw new Error('Product not found');
@@ -525,7 +533,7 @@ const productFilterAndSort = asyncHandler(async (req, res) => {
   const products = await Stock.aggregate(pipeline);
 
   if (products) {
-    //  console.log(products)
+    
     res.json(products);
   } else {
     res.status(404);
